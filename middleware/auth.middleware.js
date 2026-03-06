@@ -1,23 +1,22 @@
 import jwt from 'jsonwebtoken';
 
 export const isHospitalLoggedIn = (req, res, next) => {
+    const token = req.cookies.token;
+    
+    // DEBUG: See what is happening in the terminal
+    console.log("DEBUG: Checking Token...", token);
+
+    if (!token) {
+        console.log("DEBUG: No token found. Redirecting to login.");
+        return res.redirect('/hospital/login');
+    }
+
     try {
-        const token = req.cookies.token;
-
-        if (!token) {
-            // No token found, redirect to login
-            return res.redirect('/hospital/login');
-        }
-
-        // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        // Attach the hospital data to the request object
         req.hospital = decoded;
-        
-        next(); // Permission granted, move to the next function
+        next(); 
     } catch (err) {
-        console.log("JWT Verification Error:", err.message);
+        console.log("DEBUG: Token verification failed:", err.message);
         res.clearCookie('token');
         return res.redirect('/hospital/login');
     }

@@ -178,12 +178,14 @@ hospitalrouter.post('/login',
             // 4. SET THE COOKIE (Important for redirecting)
             res.cookie('token', token, { 
                 httpOnly: true, 
-                secure: process.env.NODE_ENV === 'production',
+                //secure: process.env.NODE_ENV === 'production',
+                secure: false, // Force it to false for testing
+                path: '/',     // Force the path to the root
                 maxAge: 3600000 // 1 hour 
             });
 
             // 5. SEND THE RESPONSE (Essential!)
-            return res.redirect('/dashboard');
+            return res.redirect('/hospital/dashboard');
 
         } catch (error) {
             console.error("Login Error:", error);
@@ -192,11 +194,9 @@ hospitalrouter.post('/login',
     }
 );
 
-hospitalrouter.get('/dashboard', isHospitalLoggedIn, (req, res) => {
+hospitalrouter.get('/hospital/dashboard', isHospitalLoggedIn, (req, res) => {
     // req.hospital contains the info we saved in the JWT (ID, Email, Name)
-    res.render('/dashboard', { 
-        hospital: req.hospital 
-    });
+    res.render('dashboard', { hospital: req.hospital });
 });
 
 // --- Logout Route ---

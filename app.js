@@ -5,6 +5,7 @@ import hospitalrouter from './routs/hospital.routs.js'; // <-- ADD THIS IMPORT
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectToDB from './config/db.js';
+import { isHospitalLoggedIn } from './middleware/auth.middleware.js'; 
 
 dotenv.config();
 connectToDB();
@@ -48,7 +49,7 @@ app.get('/hospital/register' , (req,res)=>{
     res.render('hospitalregistration');
 });
 
-app.get('/dashboard' , (req,res)=>{
+app.get('/hospital/dashboard', isHospitalLoggedIn, (req, res) => {
     res.render('dashboard');
 });
 
