@@ -50,6 +50,31 @@ MediQR bridges the communication gap. By scanning a unique patient-specific QR c
 - [ ] **Phase 5:** Biometric scanning (Fingerprint/Iris recognition research).
 
 ## 🔧 Installation & Setup
-1. **Clone the repo:**
-   ```bash
-   git clone [https://github.com/Mitsuha-24/Mediqr.git](https://github.com/Mitsuha-24/Mediqr.git)
+### 1. Prerequisites
+Ensure you have the following installed on your machine:
+* [Node.js](https://nodejs.org/) (v16 or higher)
+* [MongoDB](https://www.mongodb.com/) (Running locally or via Atlas connection string)
+* [Git](https://git-scm.com/)
+
+### 2. Clone and Install
+```bash
+# Clone the repository
+git clone [https://github.com/Mitsuha-24/MediQr.git](https://github.com/Mitsuha-24/MediQr.git)
+
+# Navigate to the project directory
+cd MediQr
+
+# Install project dependencies
+npm install
+```
+### 3.Environment Configuration
+Create a .env file in the root directory and add the following required configurations:
+* PORT=3000
+* MONGO_URI=your_mongodb_connection_string_here
+* EMAIL_USER=your_email@example.com
+* EMAIL_PASS=your_email_app_password
+
+### 4. Running the Application
+Start the development server using:
+* node app.js
+* The application will be accessible at http://localhost:3000
