@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Login - MediQR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Consistent Styling */
+        :root {
+            --primary-grad-start: #8e2de2;
+            --primary-grad-end: #4a00e0;
+            --text-dark: #333;
+            --text-light: #888;
+            --bg-white: #fff;
+            --bg-light-gray: #f5f5f5;
+        }
+
+        /* Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Using a solid background color consistent with the particle theme for better particle visibility */
+            background-color: #f0f2f5; 
+        }
+
+        /* Particle Background Styling */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Puts particles behind the login box */
+        }
+
+        /* Login Container Styling (Similar to .form-container) */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 30px;
+            background-color: var(--bg-white);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1; /* Ensures login box is above particles */
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-grad-end);
+            margin-bottom: 30px;
+        }
+
+        /* Form Element Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: var(--bg-light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--primary-grad-start);
+            box-shadow: 0 0 0 3px rgba(74, 0, 224, 0.1);
+        }
+
+        /* Button Styling (Same as .action-button) */
+        button[type="submit"] {
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
+            color: var(--bg-white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(74, 0, 224, 0.3);
+            margin-top: 5px;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 0, 224, 0.4);
+        }
+
+        /* Link Styling (Same as .back-link) */
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--primary-grad-end);
+            text-decoration: none;
+            font-weight: 600; /* Increased weight for visibility */
+            transition: color 0.2s ease;
+        }
+
+        .register-link:hover {
+            color: var(--primary-grad-start);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="login-container">
+        <h2>Hospital Login</h2>
+        <form action="/hospital/login" method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <a href="/hospital/register" class="register-link">Don't have an account? Register here first.</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // --- Particles.js Background Logic ---
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#4a00e0" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#8e2de2", "opacity": 0.4, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } } }, "retina_detect": true });
+    </script>
+    
+</body>
+</html>

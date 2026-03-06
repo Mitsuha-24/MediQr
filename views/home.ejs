@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency QR Code Service - Safety, Instantly</title>
+    <style>
+        /* RESET AND BASE STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Color Palette */
+        :root {
+            --color-primary: #4599ba;   /* Blue */
+            --color-secondary: #783fbe; /* Purple */
+            --color-accent: #4553ba;    /* Dark Blue */
+            --color-text: #333;
+            --color-light: #fff;
+            --color-bg-light: #f4f4f4;
+            --color-shadow: rgba(0, 0, 0, 0.15);
+            --color-footer-bg: #222;
+            --color-footer-text: #ccc;
+            --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            --gradient-secondary: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+        }
+
+        /* Buttons and CTAs */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--color-light);
+            box-shadow: 0 4px 15px rgba(69, 153, 186, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: var(--color-light);
+            box-shadow: 0 4px 15px rgba(120, 63, 190, 0.3);
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Hover Effects */
+        .hover-shadow:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .hover-pulse:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(69, 153, 186, 0.4);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 4px solid var(--color-primary);
+        }
+
+        /* HEADER & NAVIGATION */
+        #main-header {
+            background-color: var(--color-light);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #main-header.scrolled {
+            padding: 5px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        #main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo a {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: var(--color-secondary);
+            text-decoration: none;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #nav-logged-out ul, #nav-logged-in ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        #nav-logged-out li, #nav-logged-in li {
+            margin-left: 25px;
+        }
+
+        #nav-logged-out a:not(.btn), #nav-logged-in a:not(.btn) {
+            color: var(--color-text);
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        #nav-logged-out a:not(.btn):hover, #nav-logged-in a:not(.btn):hover {
+            color: var(--color-primary);
+            background-color: rgba(69, 153, 186, 0.1);
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* HERO SECTION */
+        #hero {
+            color: var(--color-light);
+            padding: 120px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        #hero h1 {
+            font-size: 2.8em;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            font-weight: 700;
+            margin-top: -50px;
+        }
+
+        #hero p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* CSS Live Animated Gradient Background */
+        .live-gradient {
+            background: linear-gradient(-45deg, #4599ba, #4553ba, #783fbe, #4599ba);
+            background-size: 400% 400%;
+            animation: gradient-flow 15s ease infinite;
+        }
+
+        @keyframes gradient-flow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* KEY FEATURES */
+        .section-padding {
+            padding: 40px 0;
+        }
+
+        .bg-light {
+            background-color: var(--color-bg-light);
+        }
+
+        #features h2 {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 2.5em;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+
+        .feature-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .feature-card {
+            background-color: var(--color-light);
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+
+        .feature-icon {
+            font-size: 3.5em;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CONTACT MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 10px;
+            color: var(--color-secondary);
+            font-size: 1.8em;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--color-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(69, 153, 186, 0.2);
+        }
+
+        /* FOOTER STYLES */
+        #main-footer {
+            background-color: var(--color-footer-bg);
+            color: var(--color-footer-text);
+            padding: 70px 0 30px;
+            font-size: 0.95em;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .footer-col {
+            min-width: 180px;
+        }
+
+        .footer-info {
+            min-width: 280px;
+        }
+
+        .footer-info .logo a {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        #main-footer h4 {
+            color: var(--color-light);
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        #main-footer h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        #main-footer p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        #main-footer ul {
+            list-style: none;
+        }
+
+        #main-footer ul li {
+            margin-bottom: 12px;
+        }
+
+        #main-footer a {
+            color: var(--color-footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        #main-footer a:hover {
+            color: var(--color-primary);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            #hero h1 {
+                font-size: 2.8em;
+            }
+            
+            .feature-grid {
+                gap: 20px;
+            }
+            
+            .feature-card {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #main-header .container {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            #nav-logged-out ul, #nav-logged-in ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            #nav-logged-out li, #nav-logged-in li {
+                margin: 5px 10px;
+            }
+            
+            #hero {
+                padding: 100px 0 80px;
+            }
+            
+            #hero h1 {
+                font-size: 2.2em;
+            }
+            
+            #hero p {
+                font-size: 1.1em;
+            }
+            
+            .section-padding {
+                padding: 70px 0;
+            }
+            
+            .footer-grid {
+                justify-content: flex-start;
+                gap: 30px;
+            }
+            
+            .footer-col {
+                min-width: 45%;
+                margin-bottom: 30px;
+            }
+            
+            .footer-info {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #hero h1 {
+                font-size: 1.8em;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .footer-col {
+                min-width: 100%;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="#">MediQR</a>
+            </div>
+            
+            <nav id="nav-logged-out">
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="contact.html">Schemes</a></li>
+                    <li><a href="/about">About Us</a></li>
+                   <a href="/contact">contact us</a>
+                    <li>
+                        <select id="lang-select">
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                        </select>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="live-gradient">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>The Life Saver: Your Emergency Profile, <br> One Scan Away.</h1>
+                    <p>Instantly provide crucial medical and contact information to first responders. Save Time, Save Life.</p>
+                    <div class="hero-actions">
+                        <a href="/login" class="btn btn-primary hover-shadow">Get Started Free</a>
+                        <a href="#features" class="btn btn-secondary hover-shadow">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="./images/images.png" height="200px">
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section-padding">
+            <div class="container">
+                <h2>Why Choose Our Service?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card hover-lift">
+                        <span class="feature-icon">⏱️</span>
+                        <h3>Instant Access</h3>
+                        <p>Critical information available in seconds to first responders via any smartphone scan.</p>
+                    </div>
+                    <div class="feature-card hover-lift">
+                        <span class="feature-icon">🩺</span>
+                        <h3>Comprehensive Profile</h3>
+                        <p>Store medical conditions, allergies, medications, and multiple emergency contacts securely.</p>
+                    </div>
+                    <div class="feature-card hover-lift">
+                        <span class="feature-icon">🔒</span>
+                        <h3>Privacy & Security</h3>
+                        <p>Your data is encrypted and only accessible when the unique QR code is scanned in an emergency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Request a Call Back</h3>
+            <form id="contact-form">
+                <p>We'll call you shortly to answer any questions.</p>
+                <div class="form-group">
+                    <label for="contact-name">Name</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-phone">Phone Number</label>
+                    <input type="tel" id="contact-phone" required>
+                </div>
+                <button type="submit" class="btn btn-primary hover-shadow">Submit</button>
+                <p id="contact-message" style="margin-top: 15px; color: green; display: none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <footer id="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-info">
+                    <div class="logo">
+                        <a href="#">MediQR</a>
+                    </div>
+                    <h4>by CareConnect</h4>
+                    <p>Safety and peace of mind, one scan away.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about-us.html">About us</a></li>
+                        <li><a href="/reviews.html">Reviews</a></li>
+                        <li><a href="/feedback.html">Feedback</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/product-help.html">Product Help</a></li>
+                        <li><a href="/faq.html">FAQ</a></li>
+                        <li><a href="/features.html">Features</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/terms-conditions.html">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MediQR by CareConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal functionality
+            const modal = document.getElementById('contact-modal');
+            const closeBtn = document.querySelector('.close-btn');
+            const contactForm = document.getElementById('contact-form');
+            const contactMessage = document.getElementById('contact-message');
+            
+            // Function to open modal (you can call this from any contact button)
+            function openModal() {
+                modal.style.display = 'block';
+            }
+            
+            // Close modal when clicking the X
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simple form validation
+                const name = document.getElementById('contact-name').value;
+                const phone = document.getElementById('contact-phone').value;
+                
+                if (name && phone) {
+                    // In a real app, you would send this data to a server
+                    contactMessage.textContent = 'Thank you! We will contact you shortly.';
+                    contactMessage.style.display = 'block';
+                    
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(function() {
+                        contactMessage.style.display = 'none';
+                        modal.style.display = 'none';
+                    }, 5000);
+                }
+            });
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('main-header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

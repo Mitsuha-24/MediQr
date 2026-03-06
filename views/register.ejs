@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Patient Profile - MediQR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-grad-start: #8e2de2;
+            --primary-grad-end: #4a00e0;
+            --text-dark: #333;
+            --text-light: #888;
+            --bg-white: #fff;
+            --bg-light-gray: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 20px 0;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            background-color: var(--bg-white);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .form-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .form-header p {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-grad-end);
+            padding-bottom: 5px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .form-row .input-group {
+            flex: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="date"],
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            background-color: var(--bg-light-gray);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--primary-grad-end);
+            box-shadow: 0 0 0 2px rgba(74, 0, 224, 0.2);
+        }
+
+        .input-group .file-upload-label {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--bg-light-gray);
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .input-group input[type="file"] {
+            display: none;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
+            color: var(--bg-white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(74, 0, 224, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 0, 224, 0.4);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-grad-end);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Create New Patient Profile</h1>
+            <p>Fill in the details below to register a new patient and generate their record.</p>
+        </div>
+
+        <form id="patient-profile-form">
+            <h2 class="form-section-title">Personal Details</h2>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="patient-name">Patient Full Name</label>
+                    <input type="text" id="patient-name" placeholder="e.g., John Doe" required>
+                </div>
+                <div class="input-group">
+                    <label for="patient-address">Address</label>
+                    <input type="text" id="patient-address" placeholder="e.g., 123 Main St, Anytown" required>
+                </div>
+            </div>
+
+            <h2 class="form-section-title">Medical Information</h2>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="medication">Current Medication</label>
+                    <textarea id="medication" placeholder="List all current medications"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="allergies">Allergies</label>
+                    <textarea id="allergies" placeholder="List all known allergies"></textarea>
+                </div>
+            </div>
+            
+            <h2 class="form-section-title">Upload Reports</h2>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Blood Pressure Report</label>
+                    <label for="bp-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="bp-report">
+                </div>
+                <div class="input-group">
+                    <label>Sugar/Glucose Report</label>
+                    <label for="sugar-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="sugar-report">
+                </div>
+                <div class="input-group">
+                    <label>ECG Report</label>
+                    <label for="ecg-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="ecg-report">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>X-Ray Report</label>
+                    <label for="xray-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="xray-report">
+                </div>
+                <div class="input-group">
+                    <label>MRI Scan Report</label>
+                    <label for="mri-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="mri-report">
+                </div>
+                <div class="input-group">
+                    <label>CT Scan Report</label>
+                    <label for="ct-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="ct-report">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Ultrasound Report</label>
+                    <label for="ultrasound-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="ultrasound-report">
+                </div>
+                <div class="input-group">
+                    <label>CBC Report</label>
+                    <label for="cbc-report" class="file-upload-label">Choose file...</label>
+                    <input type="file" id="cbc-report">
+                </div>
+                <div class="input-group">
+                    <label>Operation Details</label>
+                    <textarea id="operation-details" placeholder="Details of recent operations"></textarea>
+                </div>
+            </div>
+
+            <h2 class="form-section-title">Next Visit Schedule</h2>
+            <div class="input-group">
+                <label for="next-visit">Next Visit Date</label>
+                <input type="date" id="next-visit">
+            </div>
+
+            <button type="submit" class="action-button">Generate Secure QR & PDF</button>
+            <a href="dashboard" class="back-link">Back to Dashboard</a>
+        </form>
+    </div>
+    
+    <div id="qrcode" style="display: none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        // --- Particles.js Background Logic ---
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#4a00e0" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#8e2de2", "opacity": 0.4, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } } }, "retina_detect": true });
+
+        // Update file input label
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const label = e.target.previousElementSibling;
+                if (e.target.files.length > 0) {
+                    label.textContent = e.target.files[0].name;
+                } else {
+                    label.textContent = 'Choose file...';
+                }
+            });
+        });
+
+        const form = document.getElementById('patient-profile-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 1. Data Collection
+            const patientData = {
+                name: document.getElementById('patient-name').value,
+                address: document.getElementById('patient-address').value,
+                aadharNumber: document.getElementById('adharnumber').value,
+                medication: document.getElementById('medication').value,
+                allergies: document.getElementById('allergies').value,
+                bpReport: document.getElementById('bp-report').files[0]?.name || 'N/A',
+                sugarReport: document.getElementById('sugar-report').files[0]?.name || 'N/A',
+                ecgReport: document.getElementById('ecg-report').files[0]?.name || 'N/A',
+                xrayReport: document.getElementById('xray-report').files[0]?.name || 'N/A',
+                mriReport: document.getElementById('mri-report').files[0]?.name || 'N/A',
+                ctReport: document.getElementById('ct-report').files[0]?.name || 'N/A',
+                ultrasoundReport: document.getElementById('ultrasound-report').files[0]?.name || 'N/A',
+                cbcReport: document.getElementById('cbc-report').files[0]?.name || 'N/A',
+                operationDetails: document.getElementById('operation-details').value,
+                nextVisit: document.getElementById('next-visit').value,
+                generatedOn: new Date().toLocaleString()
+            };
+
+            // 2. Encryption Logic
+            // Change 'SECRET_KEY_MEDIQR' to something unique
+            const secretKey = 'SECRET_KEY_MEDIQR'; 
+            const jsonDataString = JSON.stringify(patientData);
+            const encryptedData = CryptoJS.AES.encrypt(jsonDataString, secretKey).toString();
+
+            // 3. QR Generation (with Encrypted Data)
+            const qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = ''; 
+            
+            new QRCode(qrcodeContainer, {
+                text: encryptedData,
+                width: 256,
+                height: 256
+            });
+
+            setTimeout(() => {
+                generateAndSavePDF(patientData);
+            }, 500);
+        });
+
+        function generateAndSavePDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (!qrCanvas) return;
+            const qrImgData = qrCanvas.toDataURL('image/png', 1.0);
+
+            doc.setFontSize(22);
+            doc.text("Patient Medical Record", 105, 20, null, null, "center");
+            doc.addImage(qrImgData, 'PNG', 150, 30, 45, 45);
+
+            doc.setFontSize(12);
+            doc.text(`Name: ${data.name}`, 20, 40);
+            doc.text(`Address: ${data.address}`, 20, 50);
+            doc.text('Aadhar Number: ' + data.aadharNumber, 20, 60);
+            doc.text(`Generated On: ${data.generatedOn}`, 20, 60);
+
+            let yPos = 80;
+            doc.setFontSize(14);
+            doc.text("Medical Information", 20, yPos);
+            yPos += 10;
+            doc.setFontSize(11);
+            doc.text("Current Medication:", 20, yPos);
+            doc.text(doc.splitTextToSize(data.medication || 'N/A', 170), 20, yPos + 5);
+            yPos += 25;
+            doc.text("Allergies:", 20, yPos);
+            doc.text(doc.splitTextToSize(data.allergies || 'N/A', 170), 20, yPos + 5);
+            yPos += 25;
+
+            doc.setFontSize(14);
+            doc.text("Uploaded Reports", 20, yPos);
+            yPos += 10;
+            doc.setFontSize(11);
+            doc.text(`- BP Report: ${data.bpReport}`, 20, yPos);
+            doc.text(`- Sugar Report: ${data.sugarReport}`, 100, yPos);
+            yPos += 10;
+            doc.text(`- ECG Report: ${data.ecgReport}`, 20, yPos);
+            doc.text(`- X-Ray Report: ${data.xrayReport}`, 100, yPos);
+            yPos += 10;
+            doc.text(`- MRI Report: ${data.mriReport}`, 20, yPos);
+            doc.text(`- CT Scan Report: ${data.ctReport}`, 100, yPos);
+            yPos += 15;
+            doc.text("Operation Details:", 20, yPos);
+            doc.text(doc.splitTextToSize(data.operationDetails || 'N/A', 170), 20, yPos + 5);
+            
+            doc.save(`${data.name.replace(/\s+/g, '_')}_Medical_Record.pdf`);
+        }
+    </script>
+</body>
+</html>

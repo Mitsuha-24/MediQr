@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Contact Form Section */
+    .contact-container {
+      text-align: center;
+      padding: 10px;
+    }
+
+    .contact-container h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .contact-container p {
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .contact-form input {
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      outline: none;
+      width: 250px;
+    }
+
+    .contact-form textarea {
+      width: 520px;
+      height: 100px;
+      padding: 12px 15px;
+      resize: none;
+      border-radius: 15px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: #3be6aa;
+      box-shadow: 0 0 6px rgba(59, 230, 170, 0.4);
+    }
+
+    .submit-btn {
+      margin-top: 5px;
+      margin-bottom: 10px;
+      background: #3be6aa;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 40px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #2ccf97;
+    }
+
+    /* Info Section */
+    .info-section {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #3be6aa;
+      color: white;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+      margin-top: -20px;
+    }
+
+    .info-box {
+      text-align: center;
+      flex: 1;
+      min-width: 220px;
+      margin: 15px;
+    }
+
+    .info-box img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+      background: white;
+      padding: 10px;
+      border-radius: 50%;
+      margin-top: -40px;
+    }
+
+    .info-box h3 {
+      margin: 10px 0;
+      font-size: 20px;
+    }
+
+    .info-box p,
+    .info-box a {
+      margin: 5px 0;
+      font-size: 14px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .homeb{
+      font-size: 14px;
+      padding-left: 25px;
+      padding-right: 25px;
+    }
+
+    .goto{
+margin-left: 1000px;
+margin-top: 10px;
+color: #3be6aa;
+  background-color: white;
+  border:#3be6aa solid;
+  border-radius: 25px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+  padding-top: 5px;
+  padding-bottom: 5px;
+    }
+
+    .info-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="/">
+<button class="goto">
+  <span class="homeb">Go to Home</span>
+  </button></a>
+  <div class="contact-container">
+    <h1>Contact Us </h1> 
+    <p>Any questions or remarks? Just write us a message!</p>
+    
+    <form class="contact-form">
+      <!-- Row 1 -->
+      <div class="input-row">
+        <input type="email" placeholder="Enter a valid email address" required>
+        <input type="text" placeholder="Enter your Name" required>
+      </div>
+      <!-- Row 2 -->
+      <textarea placeholder="Write your message here..." required></textarea>
+      <!-- Row 3 -->
+      <button type="submit" class="submit-btn">SUBMIT</button>
+    </form>
+  </div>
+
+  <div class="info-section">
+    <div class="info-box">
+      <img src="../images/gmail.png" alt="Gmail Icon">
+      <h3>Mail us</h3>
+      <a href="mailto:avishkargunjal07@email.com" target="_blank">
+        avishkargunjal07@gmail.com
+      </a>
+    </div>
+    <div class="info-box">
+      <img src="../images/circle.png" alt="Phone Icon">
+      <h3>PHONE </h3>
+      <p>+ 912 3 567 8987</p>
+      <p>+ 912 5 252 3336</p>
+    </div>
+    <div class="info-box">
+      <img src="../images/map.png" alt="Map Icon">
+      <h3>OUR LOCATION</h3>
+      <a href="https://maps.app.goo.gl/cfQpayTs7BzLdcyo6" target="_blank">View Map here</a>
+
+    </div>
+  </div>
+
+</body>
+</html>
